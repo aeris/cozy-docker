@@ -1,0 +1,14 @@
+diff --git a/mnt.cc b/mnt.cc
+index 007f839..075b3ef 100644
+--- a/mnt.cc
++++ b/mnt.cc
+@@ -245,7 +245,9 @@ static bool remountPt(const mount_t& mpt) {
+ 	    {MS_MANDLOCK, ST_MANDLOCK},
+ 	    {MS_NOATIME, ST_NOATIME},
+ 	    {MS_NODIRATIME, ST_NODIRATIME},
++#if defined(ST_RELATIME)
+ 	    {MS_RELATIME, ST_RELATIME},
++#endif
+ 	};
+ 
+ 	const unsigned long per_mountpoint_flags =

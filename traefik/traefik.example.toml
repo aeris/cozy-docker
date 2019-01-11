@@ -1,0 +1,22 @@
+defaultEntryPoints = ["http", "https"]
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+  [entryPoints.https]
+  address = ":443"
+    [entryPoints.https.tls]
+
+[docker]
+exposedByDefault = false
+
+[acme]
+onHostRule = true
+entryPoint = "https"
+email = 
+storage = "acme.json"
+# caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+KeyType = "EC256"
+onDemand = true
+
+[acme.tlsChallenge]

@@ -1,0 +1,6 @@
+/.env
+/couchdb/data/
+/cozy/data/
+/cozy/cozy-admin-passphrase
+/traefik/traefik.toml
+/traefik/acme.json

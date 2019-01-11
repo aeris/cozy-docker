@@ -1,0 +1,29 @@
+host: 0.0.0.0
+port: 8080
+
+subdomains: nested
+
+admin:
+  host: 127.0.0.1
+  port: 6060
+  secret_filename: cozy-admin-passphrase
+
+fs:
+  url: file://localhost/var/lib/cozy
+
+couchdb:
+  url: {{.Env.COZY_COUCHDB_URL}}
+
+fs:
+  url: file:///var/lib/cozy
+
+konnectors:
+  cmd: /usr/share/cozy/konnector-nsjail-run.sh
+
+log:
+  level: info
+
+registries:
+  default:
+  - https://apps-registry.cozycloud.cc/
+  - https://apps-registry.cozycloud.cc/banks

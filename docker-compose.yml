@@ -1,0 +1,47 @@
+version: "3.7"
+services:
+  couchdb:
+    image: couchdb:2.3
+    volumes:
+      - ./couchdb/data:/opt/couchdb/data
+    # labels:
+    #   traefik.enable: true
+    #   traefik.port: 5984
+    #   traefik.frontend.entryPoints: http
+    #   traefik.frontend.rule: Host:couchdb.localhost
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.0
+    labels:
+      traefik.enable: true
+      traefik.port: 8025
+      traefik.frontend.entryPoints: http
+      traefik.frontend.rule: Host:mailhog.localhost
+
+  cozy:
+    build: ./cozy
+    image: cozy
+    # restart: unless-stopped
+    depends_on:
+      - couchdb
+      - mailhog
+    volumes:
+      - ./cozy/cozy-admin-passphrase:/etc/cozy/cozy-admin-passphrase
+      - ./cozy/data:/var/lib/cozy
+    labels:
+      traefik.enable: true
+      traefik.port: 8080
+      traefik.frontend.entryPoints: https
+      traefik.frontend.rule: HostRegexp:{catchall:.*}.${DOMAIN}
+
+  traefik:
+    image: traefik:1.7-alpine
+    command: --api --traefiklog
+    ports:
+      - "127.0.0.1:80:80"
+      - "443:443"
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik/traefik.toml:/etc/traefik/traefik.toml
+      - ./traefik/acme.json:/acme.json
