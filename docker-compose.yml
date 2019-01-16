@@ -3,7 +3,7 @@ services:
   couchdb:
     image: couchdb:2.3
     volumes:
-      - ./couchdb/data:/opt/couchdb/data
+      - ${COUCHDB_VOLUME_PATH}:/opt/couchdb/data
     # labels:
     #   traefik.enable: true
     #   traefik.port: 5984
@@ -27,7 +27,7 @@ services:
       - mailhog
     volumes:
       - ./cozy/cozy-admin-passphrase:/etc/cozy/cozy-admin-passphrase
-      - ./cozy/data:/var/lib/cozy
+      - ${COZY_DATA_VOLUME_PATH}:/var/lib/cozy
     labels:
       traefik.enable: true
       traefik.port: 8080

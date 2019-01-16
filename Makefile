@@ -12,11 +12,15 @@ set-email:
 	@read -r -p "Email to be used for Let's Encrypt ACME: " EMAIL; \
 	sed "s/^email = .*/email = \"$$EMAIL\"/" traefik/traefik.example.toml > traefik/traefik.toml
 
-couchdb/data/ cozy/data/:
-	@mkdir -p "$@"
+.PHONY: set-volumes
+set-volumes:
+	@read -r -p "Path of the CouchDB data: " COUCHDB_DATA; \
+	sed -i "s#^COUCHDB_VOLUME_PATH=.*#COUCHDB_VOLUME_PATH=$$COUCHDB_DATA#" .env; \
+	mkdir -p "$$COUCHDB_DATA"
 
-.PHONY: create-volumes
-create-volumes: | couchdb/data/ cozy/data/
+	@read -r -p "Path of the Cozy data: " COZY_DATA; \
+	sed -i "s#^COZY_DATA_VOLUME_PATH=.*#COZY_DATA_VOLUME_PATH=$$COZY_DATA#" .env; \
+	mkdir -p "$$COZY_DATA"
 
 .PHONY: start-couchdb
 start-couchdb:
@@ -40,7 +44,7 @@ traefik/acme.json:
 	@touch $@
 
 .PHONY: setup
-setup: set-domain set-email create-volumes init-couchdb cozy-passphrase traefik/acme.json
+setup: set-domain set-email set-volumes init-couchdb cozy-passphrase traefik/acme.json
 
 .PHONY: start
 start:
