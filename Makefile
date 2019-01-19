@@ -1,3 +1,6 @@
+COUCHDB_DEFAULT_DATA_PATH=./couchdb/data
+COZY_DEFAULT_DATA_PATH=./cozy/data
+
 .SUFFIXES:
 MAKEFLAGS += --no-builtin-rules
 .DEFAULT_GOAL := setup
@@ -14,13 +17,19 @@ set-email:
 
 .PHONY: set-volumes
 set-volumes:
-	@read -r -p "Path of the CouchDB data: " COUCHDB_DATA; \
-	sed -i "s#^COUCHDB_VOLUME_PATH=.*#COUCHDB_VOLUME_PATH=$$COUCHDB_DATA#" .env; \
-	mkdir -p "$$COUCHDB_DATA"
+	@read -r -p "Path of the CouchDB data (default to ${COUCHDB_DEFAULT_DATA_PATH}): " COUCHDB_DATA_PATH; \
+	if [ -z "$$COUCHDB_DATA_PATH" ]; then \
+		COUCHDB_DATA_PATH=${COUCHDB_DEFAULT_DATA_PATH}; \
+	fi; \
+	sed -i "s#^COUCHDB_VOLUME_PATH=.*#COUCHDB_VOLUME_PATH=$$COUCHDB_DATA_PATH#" .env; \
+	mkdir -p "$$COUCHDB_DATA_PATH"
 
-	@read -r -p "Path of the Cozy data: " COZY_DATA; \
-	sed -i "s#^COZY_DATA_VOLUME_PATH=.*#COZY_DATA_VOLUME_PATH=$$COZY_DATA#" .env; \
-	mkdir -p "$$COZY_DATA"
+	@read -r -p "Path of the Cozy data (default to ${COZY_DEFAULT_DATA_PATH}): " COZY_DATA_PATH; \
+	if [ -z "$$COZY_DATA_PATH" ]; then \
+		COZY_DATA_PATH=${COZY_DEFAULT_DATA_PATH}; \
+	fi; \
+	sed -i "s#^COZY_DATA_PATH=.*#COZY_DATA_PATH=$$COZY_DATA_PATH#" .env; \
+	mkdir -p "$$COZY_DATA_PATH"
 
 .PHONY: start-couchdb
 start-couchdb:
